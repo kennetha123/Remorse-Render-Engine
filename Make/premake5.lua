@@ -36,7 +36,7 @@ include (trunk .. "Externals/glfw/project")
 
 project "RRE"
 	location (trunk .. "Engine")
-	kind "StaticLib"
+	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
@@ -52,6 +52,10 @@ project "RRE"
 	{
 		(trunk .. "Engine/Source/**.h"),
 		(trunk .. "Engine/Source/**.cpp"),
+		(trunk .. "Externals/stb_image/**.cpp"),
+		(trunk .. "Externals/stb_image/**.h"),
+		(trunk .. "Externals/glm/glm/**.hpp"),		
+		(trunk .. "Externals/glm/glm/**.inl")
 	}
 	
 	defines
@@ -63,6 +67,14 @@ project "RRE"
 	includedirs
 	{
 		(trunk .. "Engine/Source"),
+		(trunk .. "Externals"),
+		(trunk .. "Externals/spdlog/include"),
+        --(trunk .. "Externals/assimp/include",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}"
 	}
 	
 	links

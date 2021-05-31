@@ -41,8 +41,8 @@ project "RRE"
 	cppdialect "C++17"
 	staticruntime "on"
 	
-	targetdir ("%{prj.name}/bin/" .. outputName)
-	objdir ("%{prj.name}/obj/" .. outputName)
+	targetdir (trunk .. "%{prj.name}/bin/" .. outputName)
+	objdir (trunk .. "%{prj.name}/obj/" .. outputName)
 
 	-- use precompile header
 	pchheader "rrepch.h"
@@ -67,7 +67,7 @@ project "RRE"
 	includedirs
 	{
 		(trunk .. "Engine/Source"),
-		(trunk .. "Externals"),
+		--(trunk .. "Externals"),
 		(trunk .. "Externals/spdlog/include"),
         --(trunk .. "Externals/assimp/include",
 		"%{IncludeDir.GLFW}",

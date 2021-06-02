@@ -1,8 +1,6 @@
 #pragma once
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include "OpenGL/OpenGLInput.h"
-
+#include "OpenGL/OpenGLRenderer.h"
 class OpenGLWindow
 {
 public:
@@ -14,5 +12,6 @@ public:
 private:
 	GLFWwindow* window;
 	OpenGLInput input;
+	OpenGLRenderer render;
 };
 

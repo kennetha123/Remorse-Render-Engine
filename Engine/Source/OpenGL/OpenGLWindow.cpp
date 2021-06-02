@@ -27,6 +27,8 @@ OpenGLWindow::OpenGLWindow(unsigned int&& width, unsigned int&& height, std::str
 		std::cout << "GLAD not initialize" << std::endl;
 	}
 
+	render.Render();
+
 }
 
 OpenGLWindow::~OpenGLWindow()
@@ -42,6 +44,8 @@ void OpenGLWindow::UpdateWindow()
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		render.Draw();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

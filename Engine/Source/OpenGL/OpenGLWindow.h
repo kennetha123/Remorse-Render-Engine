@@ -12,6 +12,6 @@ public:
 private:
 	GLFWwindow* window;
 	OpenGLInput input;
-	OpenGLRenderer render;
+	OpenGLRenderer* render;
 };
 

@@ -1,18 +1,20 @@
 #pragma once
-#include <fstream>
-#include <string>
-#include <sstream>
+#include "OpenGLShader.h"
+
 class OpenGLRenderer
 {
 public:
+	OpenGLRenderer();
+	~OpenGLRenderer();
+
+public:
+	OpenGLShader* shader;
+
+public:
 	void Render();
 	void Draw();
-	void ShaderAssert(unsigned int shader);
-private:
-	unsigned int shaderProgram;
-	unsigned int vertexShader;
-	unsigned int fragmentShader;
 
+private:
 	unsigned int VBO;
 	unsigned int VAO;
 	unsigned int EBO;

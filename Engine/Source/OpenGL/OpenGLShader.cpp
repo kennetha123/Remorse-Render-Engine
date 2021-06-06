@@ -1,11 +1,12 @@
 #include "rrepch.h"
 #include "OpenGLShader.h"
 
-OpenGLShader::OpenGLShader()
+OpenGLShader::OpenGLShader(const char* vertexPath, const char* fragmentPath)
 {
     // filestream start where project location started.
-    std::ifstream vertexShaderFile("Shader/triangle.vert");
-    std::ifstream fragmentShaderFile("Shader/triangle.frag");
+    std::ifstream vertexShaderFile(vertexPath);
+    std::ifstream fragmentShaderFile(fragmentPath);
+
     std::stringstream vertexStream;
     std::stringstream fragmentStream;
     std::string vertexSource;
@@ -23,7 +24,6 @@ OpenGLShader::OpenGLShader()
     // directly to shaderSource.
     const char* vs = vertexSource.c_str();
     const char* fs = fragmentSource.c_str();
-
 
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vs, NULL);
@@ -50,6 +50,26 @@ OpenGLShader::~OpenGLShader()
 {
 }
 
+void OpenGLShader::use()
+{
+    glUseProgram(shaderProgram);
+}
+
+void OpenGLShader::SetUniformBool(const std::string& name, bool value) const
+{
+    glUniform1i(glGetUniformLocation(shaderProgram, name.c_str()), (int)value);
+}
+
+void OpenGLShader::SetUniformInt(const std::string& name, int value) const
+{
+    glUniform1i(glGetUniformLocation(shaderProgram, name.c_str()), value);
+}
+
+void OpenGLShader::SetUniformFloat(const std::string& name, float value) const
+{
+    glUniform1f(glGetUniformLocation(shaderProgram, name.c_str()), value);
+}
+
 void OpenGLShader::ShaderAssert(unsigned int shader)
 {
     int success;
@@ -58,6 +78,8 @@ void OpenGLShader::ShaderAssert(unsigned int shader)
     if (!success)
     {
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
+#ifdef RRE_DEBUG
+        spdlog::error("ERROR::SHADER::COMPILATION_FAILED : {0}", infoLog);
+#endif
     }
 }

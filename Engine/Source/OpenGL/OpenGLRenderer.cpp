@@ -1,10 +1,8 @@
 #include "rrepch.h"
 #include "OpenGLRenderer.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 
 OpenGLRenderer::OpenGLRenderer() :
-    VBO(0), VAO(0), EBO(0), texture(0)
+    VBO(0), VAO(0), EBO(0)
 {
     // vertex draw. remove later.
     float vertices[] = {
@@ -45,52 +43,8 @@ OpenGLRenderer::OpenGLRenderer() :
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(true);
+    texture = new OpenGLTexture();
 
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-    unsigned char* data = stbi_load("Texture/container.jpg", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        spdlog::error("Failed to load Texture 1");
-    }
-
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    data = stbi_load("Texture/awesomeface.png", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        spdlog::error("Failed to load Texture 2");
-    }
-
-
-    stbi_image_free(data);
     shader->use();
     shader->SetUniformInt("Texture1", 1);
 }
@@ -98,6 +52,7 @@ OpenGLRenderer::OpenGLRenderer() :
 OpenGLRenderer::~OpenGLRenderer()
 {
     delete shader;
+    delete texture;
 }
 
 void OpenGLRenderer::Render()
@@ -109,9 +64,9 @@ void OpenGLRenderer::Draw()
 {
     shader->use();
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, texture->texture[0]);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
+    glBindTexture(GL_TEXTURE_2D, texture->texture[1]);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }

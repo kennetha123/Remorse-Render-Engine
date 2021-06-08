@@ -1,14 +1,15 @@
 #pragma once
 #include "OpenGLShader.h"
-
+#include "OpenGLTexture.h"
 class OpenGLRenderer
 {
 public:
 	OpenGLRenderer();
 	~OpenGLRenderer();
 
-public:
+private:
 	OpenGLShader* shader;
+	OpenGLTexture* texture;
 
 public:
 	void Render();
@@ -19,7 +20,5 @@ private:
 	unsigned int VAO;
 	unsigned int EBO;
 
-	unsigned int texture;
-	unsigned int texture1;
 
 };

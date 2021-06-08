@@ -18,4 +18,8 @@ private:
 	unsigned int VBO;
 	unsigned int VAO;
 	unsigned int EBO;
+
+	unsigned int texture;
+	unsigned int texture1;
+
 };

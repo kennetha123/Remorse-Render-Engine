@@ -14,9 +14,7 @@ OpenGLWindow::OpenGLWindow(unsigned int&& width, unsigned int&& height, std::str
 	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (window == NULL)
 	{
-#ifdef RRE_DEBUG
 		spdlog::error("GLFW not initialize");
-#endif
 		glfwTerminate();
 	}
 
@@ -26,18 +24,14 @@ OpenGLWindow::OpenGLWindow(unsigned int&& width, unsigned int&& height, std::str
 	// Init Glad
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-#ifdef RRE_DEBUG
 		spdlog::error("GLAD not initialize");
-#endif
 	}
 
 	render = new OpenGLRenderer();
 
-#ifdef RRE_DEBUG
 	int nrAttrib;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttrib);
 	spdlog::info("Maximum number of vertex attributes supported : {0}", nrAttrib);
-#endif
 }
 
 OpenGLWindow::~OpenGLWindow()
@@ -64,5 +58,5 @@ void OpenGLWindow::UpdateWindow()
 
 void resize_callback(GLFWwindow* window, int width, int height)
 {
-	glViewport(0, 0, width, height);
+	glViewport(width, height, width, height);
 }

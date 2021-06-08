@@ -28,18 +28,19 @@ OpenGLShader::OpenGLShader(const char* vertexPath, const char* fragmentPath)
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vs, NULL);
     glCompileShader(vertexShader);
-    ShaderAssert(vertexShader);
+    ShaderAssert(vertexShader, "VERTEX");
 
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fs, NULL);
     glCompileShader(fragmentShader);
-    ShaderAssert(fragmentShader);
+    ShaderAssert(fragmentShader, "FRAGMENT");
 
     shaderProgram = glCreateProgram();
 
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
+    ShaderAssert(shaderProgram, "PROGRAM");
 
     // cleaning
     glDeleteShader(vertexShader);
@@ -70,16 +71,46 @@ void OpenGLShader::SetUniformFloat(const std::string& name, float value) const
     glUniform1f(glGetUniformLocation(shaderProgram, name.c_str()), value);
 }
 
-void OpenGLShader::ShaderAssert(unsigned int shader)
+void OpenGLShader::SetUniformVec2(const std::string& name, const glm::vec2& value) const
 {
-    int success;
-    char infoLog[512];
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (!success)
+    glUniform2fv(glGetUniformLocation(shaderProgram, name.c_str()), 3 * sizeof(float), &value[0]);
+}
+
+void OpenGLShader::SetUniformVec2(const std::string& name, float x, float y) const
+{
+    glUniform2f(glGetUniformLocation(shaderProgram, name.c_str()), x, y);
+}
+
+void OpenGLShader::SetUniformVec3(const std::string& name, const glm::vec3& value) const
+{
+    glUniform3fv(glGetUniformLocation(shaderProgram, name.c_str()), 3 * sizeof(float), &value[0]);
+}
+
+void OpenGLShader::SetUniformVec3(const std::string& name, float x, float y, float z) const
+{
+    glUniform3f(glGetUniformLocation(shaderProgram, name.c_str()), x, y, z);
+}
+
+void OpenGLShader::ShaderAssert(GLuint shader, const std::string& type)
+{
+    GLint success;
+    GLchar infoLog[1024];
+    if (type != "PROGRAM")
     {
-        glGetShaderInfoLog(shader, 512, NULL, infoLog);
-#ifdef RRE_DEBUG
-        spdlog::error("ERROR::SHADER::COMPILATION_FAILED : {0}", infoLog);
-#endif
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+            spdlog::error("ERROR::SHADER_COMPILATION_ERROR of type : ", type, infoLog);
+        }
+    }
+    else
+    {
+        glGetProgramiv(shader, GL_LINK_STATUS, &success);
+        if (!success)
+        {
+            glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+            spdlog::error("ERROR::PROGRAM_LINKING_ERROR of type: {0} {1}" ,type ,infoLog);
+        }
     }
 }

@@ -2,7 +2,8 @@
 #include "OpenGLRenderer.h"
 
 OpenGLRenderer::OpenGLRenderer() :
-    VBO(0), VAO(0), EBO(0)
+    VBO(0), VAO(0), EBO(0),
+    transform(1.0f)
 {
     // vertex draw. remove later.
     float vertices[] = {
@@ -63,6 +64,14 @@ void OpenGLRenderer::Render()
 void OpenGLRenderer::Draw()
 {
     shader->use();
+
+    transform = glm::mat4(1.0f);
+    transform = glm::scale(transform, glm::vec3(0.25f, 0.25f, 0.25f));
+
+    transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+    transform = glm::translate(transform, glm::vec3(2.0f, 2.0f, 0.0f));
+    shader->SetUniformMat4("trans", transform);
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture->texture[0]);
     glActiveTexture(GL_TEXTURE1);

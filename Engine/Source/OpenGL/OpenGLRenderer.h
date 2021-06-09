@@ -14,6 +14,7 @@ public:
 
 private:
 	OpenGLShader* shader;
+	OpenGLShader* shader1;
 	OpenGLTexture* texture;
 
 public:
@@ -21,8 +22,8 @@ public:
 	void Draw();
 
 private:
-	unsigned int VBO;
-	unsigned int VAO;
+	unsigned int VBO[2];
+	unsigned int VAO[2];
 	unsigned int EBO;
 
 	glm::mat4 transform;

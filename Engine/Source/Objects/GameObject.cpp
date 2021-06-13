@@ -1,55 +1,102 @@
 #include "rrepch.h"
 #include "GameObject.h"
 
-GameObject::GameObject() :
-transform(1.0f)
+#if defined(RRE_DEBUG) || (_DEBUG)
+#include "OpenGL/OpenGLDebugger.h"
+#define glCheckError() glCheckError(__FILE__, __LINE__)
+#endif
 
+GameObject::GameObject() :
+transform(1.0f), shader("Shader/triangle.vert", "Shader/triangle.frag")
 {
     // vertex draw. remove later.
     float vertices[] = {
-        // positions          // colors           // texture coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
-    unsigned int indices[] = {
-        0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
-    };
+
+    //unsigned int indices[] = {
+    //    0, 1, 3, // first triangle
+    //    1, 2, 3  // second triangle
+    //};
 
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
     vertexBuffer.SetData(vertices, sizeof(vertices));
-    indexBuffer.SetData(indices, sizeof(indices));
+    //indexBuffer.SetData(indices, sizeof(indices));
     vertexBuffer.Bind();
-    indexBuffer.Bind();
-
-    shader = new OpenGLShader("Shader/triangle.vert", "Shader/triangle.frag");
-    texture = new OpenGLTexture();
+    //indexBuffer.Bind();
     
-    shader->use();
-    shader->SetUniformInt("Texture1", 1);
+    shader.use();
+    shader.SetUniformInt("Texture1", 1);
+
+    shader.SetUniformMat4("model", transform);
+#if (defined(RRE_DEBUG) || (_DEBUG))
+    OpenGLDebugger::glCheckError();
+#endif
+
 }
 
 GameObject::~GameObject()
 {
-    delete shader;
-    delete texture;
 }
 
 void GameObject::Draw()
 {
-    shader->use();
+    shader.use();
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture->texture[0]);
+    glBindTexture(GL_TEXTURE_2D, texture.texture[0]);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture->texture[1]);
+    glBindTexture(GL_TEXTURE_2D, texture.texture[1]);
 
-    shader->SetUniformMat4("transform", transform);
+    shader.SetUniformMat4("model", transform);
 
     glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    GLenum errorCode = glGetError();
+#if (defined(RRE_DEBUG) || (_DEBUG))
+    OpenGLDebugger::glCheckError();
+#endif
+
 }

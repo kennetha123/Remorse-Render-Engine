@@ -3,7 +3,7 @@
 
 int main()
 {
-	OpenGLWindow* window = new OpenGLWindow(1366, 1024, "Remorse Render Engine");
+	OpenGLWindow* window = new OpenGLWindow(1280, 720, "Remorse Render Engine");
 	window->UpdateWindow();
 	delete window;
 }

@@ -3,6 +3,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#if defined(RRE_DEBUG) || (_DEBUG)
+#include "OpenGL/OpenGLDebugger.h"
+#define glCheckError() glCheckError(__FILE__, __LINE__)
+#endif
+
 OpenGLTexture::OpenGLTexture()
 {
     stbi_set_flip_vertically_on_load(true);
@@ -50,6 +55,11 @@ OpenGLTexture::OpenGLTexture()
     }
 
     stbi_image_free(data);
+
+#if (defined(RRE_DEBUG) || (_DEBUG))
+    OpenGLDebugger::glCheckError();
+#endif
+
 }
 
 OpenGLTexture::~OpenGLTexture()

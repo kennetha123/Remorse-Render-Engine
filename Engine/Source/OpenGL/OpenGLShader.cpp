@@ -1,6 +1,11 @@
 #include "rrepch.h"
 #include "OpenGLShader.h"
 
+#if defined(RRE_DEBUG) || (_DEBUG)
+#include "OpenGL/OpenGLDebugger.h"
+#define glCheckError() glCheckError(__FILE__, __LINE__)
+#endif
+
 OpenGLShader::OpenGLShader(const char* vertexPath, const char* fragmentPath)
 {
     // filestream start where project location started.
@@ -45,6 +50,10 @@ OpenGLShader::OpenGLShader(const char* vertexPath, const char* fragmentPath)
     // cleaning
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+#if (defined(RRE_DEBUG) || (_DEBUG))
+    OpenGLDebugger::glCheckError();
+#endif
+
 }
 
 OpenGLShader::~OpenGLShader()
@@ -54,6 +63,10 @@ OpenGLShader::~OpenGLShader()
 void OpenGLShader::use()
 {
     glUseProgram(shaderProgram);
+#if (defined(RRE_DEBUG) || (_DEBUG))
+    OpenGLDebugger::glCheckError();
+#endif
+
 }
 
 void OpenGLShader::SetUniformBool(const std::string& name, bool value) const
@@ -114,6 +127,9 @@ void OpenGLShader::SetUniformMat3(const std::string& name, const glm::mat3& valu
 void OpenGLShader::SetUniformMat4(const std::string& name, const glm::mat4& value) const
 {
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, name.c_str()), 1, GL_FALSE, &value[0][0]);
+#if (defined(RRE_DEBUG) || (_DEBUG))
+    OpenGLDebugger::glCheckError();
+#endif
 }
 
 void OpenGLShader::ShaderAssert(GLuint shader, const std::string& type)

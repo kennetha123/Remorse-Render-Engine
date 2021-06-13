@@ -1,6 +1,8 @@
 #pragma once
 #include "OpenGL/OpenGLInput.h"
 #include "OpenGL/OpenGLRenderer.h"
+#include "ImGui/ImGui_Main.h"
+
 class OpenGLWindow
 {
 public:
@@ -11,6 +13,7 @@ public:
 
 private:
 	GLFWwindow* window;
+	ImGui_Main imgui;
 	OpenGLInput input;
 	OpenGLRenderer* render;
 };

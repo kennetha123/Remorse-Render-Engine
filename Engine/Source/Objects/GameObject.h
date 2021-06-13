@@ -1,5 +1,6 @@
 #pragma once
 #include "OpenGL/OpenGLBuffer.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -16,10 +17,9 @@ public:
 public:
 	glm::mat4 transform;
 
-private:
-	OpenGLShader* shader;
-	OpenGLTexture* texture;
-
+public:
+	OpenGLTexture texture;
+	OpenGLShader shader;
 private:
 	OpenGLVertexBuffer vertexBuffer;
 	OpenGLIndexBuffer indexBuffer;

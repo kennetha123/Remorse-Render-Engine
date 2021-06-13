@@ -7,7 +7,7 @@
 #endif
 
 GameObject::GameObject() :
-transform(1.0f), shader("Shader/triangle.vert", "Shader/triangle.frag")
+shader("Shader/triangle.vert", "Shader/triangle.frag")
 {
     // vertex draw. remove later.
     float vertices[] = {
@@ -79,10 +79,12 @@ transform(1.0f), shader("Shader/triangle.vert", "Shader/triangle.frag")
 
 GameObject::~GameObject()
 {
+
 }
 
 void GameObject::Draw()
 {
+    // use shader before drawing
     shader.use();
 
     glActiveTexture(GL_TEXTURE0);
@@ -94,7 +96,9 @@ void GameObject::Draw()
 
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    GLenum errorCode = glGetError();
+
+    // only need declared once, it will populate all errors happened in
+    // one block.
 #if (defined(RRE_DEBUG) || (_DEBUG))
     OpenGLDebugger::glCheckError();
 #endif

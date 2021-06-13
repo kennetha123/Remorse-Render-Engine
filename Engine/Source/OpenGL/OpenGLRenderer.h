@@ -20,6 +20,12 @@ private:
 	GameObject go;
 	std::vector<glm::vec3> cubePositions;
 
+	// Camera
+	std::vector<float> viewPosition;
+	float fieldOfView;
+	
+	// Object
+	std::vector<float> objectPosition;
 private:
 	glm::mat4 view;
 	glm::mat4 projection;

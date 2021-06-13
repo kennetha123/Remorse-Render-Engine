@@ -1,13 +1,20 @@
 #include "rrepch.h"
 #include "OpenGLRenderer.h"
 
-OpenGLRenderer::OpenGLRenderer()
+OpenGLRenderer::OpenGLRenderer() :
+    fieldOfView(45.0f)
 {
     gameObject.reserve(10);
 
     for (int i = 0; i < 10; i++)
     {
         gameObject.push_back(go);
+    }
+
+    for (int i = 0; i < 3; i++)
+    {
+        viewPosition.push_back(0.0f);
+        objectPosition.push_back(0.0f);
     }
 
     cubePositions = {
@@ -37,30 +44,46 @@ void OpenGLRenderer::Draw()
     view                    = glm::mat4(1.0f);
     projection              = glm::mat4(1.0f);
 
-    static float test[3] = { 0.0f };
-
-    view = glm::translate(view, glm::vec3(test[0], test[1], test[2]));
-    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+    view = glm::translate(view, glm::vec3(viewPosition[0], viewPosition[1], viewPosition[2]));
+    projection = glm::perspective(glm::radians(fieldOfView), 1280.0f / 720.0f, 0.1f, 100.0f);
     
     shader->SetUniformMat4("view", view);
     shader->SetUniformMat4("projection", projection);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 1; i < 10; i++)
     {
-        gameObject[i].transform = glm::mat4(1.0f);
-        gameObject[i].transform = glm::translate(gameObject[i].transform, cubePositions[i]);
+        gameObject[i].Init();
+        gameObject[i].SetPosition(cubePositions[i]);
         float angle = 20.0f * i;
-        gameObject[i].transform = glm::rotate(gameObject[i].transform, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+        gameObject[i].SetRotation(angle, glm::vec3(0.5f, 1.0f, 0.0f));
         gameObject[i].Draw();
     }
+    
+    // Don't forget to use Init, or matrix won't reset and cause problem.
+    gameObject[0].Init();
+    gameObject[0].SetPosition(glm::vec3(objectPosition[0], objectPosition[1], objectPosition[2]));
+    gameObject[0].Draw();
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::Begin("View Matrix");   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-    ImGui::InputFloat3("Position", test);
+    ImGui::Begin("View Matrix");
+    
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::InputFloat3("Position", viewPosition.data());
+
+    ImGui::End();
+
+    ImGui::Begin("Projection Matrix");
+
+    ImGui::InputFloat("Field of View", &fieldOfView);
+
+    ImGui::End();
+
+    ImGui::Begin("First Object Matrix");
+
+    ImGui::InputFloat3("Position", objectPosition.data());
 
     ImGui::End();
 

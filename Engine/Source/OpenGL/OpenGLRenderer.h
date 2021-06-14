@@ -13,6 +13,10 @@ public:
 
 public:
 	void Draw();
+	void Wireframe();
+	// Camera.
+	// put on private later.
+	Camera camera;
 
 private:
 	// temporary shader
@@ -27,9 +31,8 @@ private:
 	std::vector<GameObject> gameObject;
 	std::vector<glm::vec3> cubePositions;
 
-	// Camera
-	Camera camera;
-	
+	bool wireframe;
+
 	// Object
 	std::vector<float> objectPosition;
 };

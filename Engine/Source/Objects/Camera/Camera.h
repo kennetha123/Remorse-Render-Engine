@@ -1,6 +1,7 @@
 #pragma once
 #include "Objects/Object.h"
 #include "OpenGL/OpenGLShader.h"
+#include "OpenGL/OpenGLInput.h"
 
 class Camera : public Object
 {
@@ -9,6 +10,7 @@ public:
 	~Camera();
 
 	void Draw();
+	void Input(GLFWwindow* window);
 
 public:
 	float fieldOfView;

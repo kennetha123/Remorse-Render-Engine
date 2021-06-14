@@ -1,7 +1,8 @@
 #include "rrepch.h"
 #include "OpenGLRenderer.h"
 
-OpenGLRenderer::OpenGLRenderer()
+OpenGLRenderer::OpenGLRenderer() :
+    wireframe(false)
 {
     gameObject.reserve(10);
 
@@ -70,7 +71,20 @@ void OpenGLRenderer::Draw()
     ImGui::InputFloat3("Position", objectPosition.data());
     ImGui::End();
 
+    ImGui::Begin("Rendering");
+    ImGui::Checkbox("Wireframe", &wireframe);
+    Wireframe();
+    ImGui::End();
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+}
+
+void OpenGLRenderer::Wireframe()
+{
+    if (wireframe)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    else
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

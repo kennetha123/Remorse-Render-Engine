@@ -14,7 +14,6 @@ public:
 private:
 	GLFWwindow* window;
 	ImGui_Main imgui;
-	OpenGLInput input;
 	OpenGLRenderer* render;
 };
 

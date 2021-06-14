@@ -7,15 +7,12 @@ void OpenGLInput::ProcessInput(GLFWwindow* window)
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
+}
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+void OpenGLInput::ProcessInput(GLFWwindow* window, GLenum glKey, GLenum glPress, std::function<void()> func)
+{
+	if (glfwGetKey(window, glKey) == glPress)
 	{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		func();
 	}
-
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-
 }

@@ -30,4 +30,37 @@ void Camera::Draw()
 
 	view = glm::lookAt(position, cameraForward + position, cameraUp);
 	shader.SetUniformMat4("view", view);
+
+}
+
+void Camera::Input(GLFWwindow* window)
+{
+	const float cameraSpeed = 0.05f;
+	// forward
+	OpenGLInput::ProcessInput(window, GLFW_KEY_W, GLFW_PRESS, [&]()
+		{
+			glm::vec3 calcSpeed = cameraForward * cameraSpeed;
+			SetPosition(position.x + calcSpeed.x, position.y + calcSpeed.y, position.z + calcSpeed.z);
+		});
+	
+	// backward
+	OpenGLInput::ProcessInput(window, GLFW_KEY_S, GLFW_PRESS, [&]()
+		{
+			glm::vec3 calcSpeed = cameraForward * cameraSpeed;
+			SetPosition(position.x - calcSpeed.x, position.y - calcSpeed.y, position.z - calcSpeed.z);
+		});
+	
+	// left
+	OpenGLInput::ProcessInput(window, GLFW_KEY_A, GLFW_PRESS, [&]()
+		{
+			glm::vec3 calcSpeed = cameraRight * cameraSpeed;
+			SetPosition(position.x + calcSpeed.x, position.y + calcSpeed.y, position.z + calcSpeed.z);
+		});
+	
+	// right
+	OpenGLInput::ProcessInput(window, GLFW_KEY_D, GLFW_PRESS, [&]()
+		{
+			glm::vec3 calcSpeed = cameraRight * cameraSpeed;
+			SetPosition(position.x - calcSpeed.x, position.y - calcSpeed.y, position.z - calcSpeed.z);
+		});
 }

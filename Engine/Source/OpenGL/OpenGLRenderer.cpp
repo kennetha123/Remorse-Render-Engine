@@ -1,8 +1,7 @@
 #include "rrepch.h"
 #include "OpenGLRenderer.h"
 
-OpenGLRenderer::OpenGLRenderer() :
-    fieldOfView(45.0f)
+OpenGLRenderer::OpenGLRenderer()
 {
     gameObject.reserve(10);
 
@@ -13,7 +12,6 @@ OpenGLRenderer::OpenGLRenderer() :
 
     for (int i = 0; i < 3; i++)
     {
-        viewPosition.push_back(0.0f);
         objectPosition.push_back(0.0f);
     }
 
@@ -40,15 +38,7 @@ OpenGLRenderer::~OpenGLRenderer()
 
 void OpenGLRenderer::Draw()
 {
-    // need to pass to 1 so it reset and won't go crazy (since this is an update)
-    view                    = glm::mat4(1.0f);
-    projection              = glm::mat4(1.0f);
-
-    view = glm::translate(view, glm::vec3(viewPosition[0], viewPosition[1], viewPosition[2]));
-    projection = glm::perspective(glm::radians(fieldOfView), 1280.0f / 720.0f, 0.1f, 100.0f);
-    
-    shader->SetUniformMat4("view", view);
-    shader->SetUniformMat4("projection", projection);
+    camera.Draw();
 
     for (int i = 1; i < 10; i++)
     {
@@ -68,23 +58,16 @@ void OpenGLRenderer::Draw()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::Begin("View Matrix");
-    
+    ImGui::Begin("Camera");
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::InputFloat3("Position", viewPosition.data());
-
+    float camPos[] = { camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z };
+    ImGui::InputFloat3("Position", camPos);
+    camera.SetPosition(camPos[0], camPos[1], camPos[2]);
+    ImGui::InputFloat("Field of View", &camera.fieldOfView);
     ImGui::End();
 
-    ImGui::Begin("Projection Matrix");
-
-    ImGui::InputFloat("Field of View", &fieldOfView);
-
-    ImGui::End();
-
-    ImGui::Begin("First Object Matrix");
-
+    ImGui::Begin("Game Object 0");
     ImGui::InputFloat3("Position", objectPosition.data());
-
     ImGui::End();
 
     ImGui::Render();

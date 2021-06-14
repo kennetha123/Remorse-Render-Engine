@@ -8,7 +8,7 @@ Camera::Camera() :
 	SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
 
 	cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-	cameraForward = glm::normalize(position - cameraTarget);
+	cameraForward = glm::normalize(cameraTarget - position);
 	
 	// world up when init
 	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
